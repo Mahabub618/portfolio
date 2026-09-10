@@ -1,0 +1,26 @@
+import puppeteer from 'puppeteer';
+const BASE = process.argv[2] || 'http://localhost:4200';
+const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+const page = await browser.newPage();
+await page.setViewport({ width: 1440, height: 900 });
+await page.goto(BASE + '/', { waitUntil: 'networkidle2', timeout: 60000 });
+await page.waitForSelector('#travel a[href*="/travel/"]', { timeout: 20000 });
+const href = await page.$eval('#travel a[href*="/travel/"]', (a) => a.getAttribute('href'));
+await page.click('#travel a[href*="/travel/"]');
+await page.waitForFunction((h) => location.pathname === h, { timeout: 15000 }, href);
+console.log(`PASS  card click navigates to ${page.url()}`);
+await page.waitForSelector('figure', { timeout: 15000 });
+const frames = (await page.$$('figure')).length;
+console.log(frames === 5 ? 'PASS  gallery frames render' : `FAIL  frames=${frames}`);
+// drag still suppresses click:
+await page.goto(BASE + '/', { waitUntil: 'networkidle2' });
+await page.waitForSelector('#travel a[href*="/travel/"]', { timeout: 20000 });
+const strip = await page.$('#travel .strip-scroll');
+const box = await strip.boundingBox();
+await page.mouse.move(box.x + 300, box.y + 200);
+await page.mouse.down();
+await page.mouse.move(box.x + 100, box.y + 200, { steps: 10 });
+await page.mouse.up();
+await new Promise((r) => setTimeout(r, 800));
+console.log(page.url().endsWith('/') ? 'PASS  drag does not navigate' : `FAIL  drag navigated to ${page.url()}`);
+await browser.close();
