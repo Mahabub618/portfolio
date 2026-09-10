@@ -3,6 +3,11 @@
 Angular 22 (standalone, signals, zoneless) + Tailwind CSS v4 design tokens.
 Midnight Violet palette (dark default, light toggle), Space Grotesk / Inter / JetBrains Mono.
 
+## Live
+
+- Production: https://portfolio-mahabub-rahmans-projects.vercel.app (admin at `/admin`)
+- Frontend deploys are direct uploads (Vercel CLI); backend auto-deploys from `main` on Render.
+
 ## Run locally
 
 ```bash
