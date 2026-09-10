@@ -16,7 +16,9 @@ export class DragScrollDirective {
     this.dragged = false;
     this.startX = event.clientX;
     this.startScrollLeft = this.el.nativeElement.scrollLeft;
-    this.el.nativeElement.setPointerCapture(event.pointerId);
+    // NOTE: no setPointerCapture here — capturing retargets the follow-up
+    // click event to the strip, which would swallow routerLink navigation
+    // on the cards. The dragged-flag click suppression below is enough.
     this.el.nativeElement.style.cursor = 'grabbing';
   }
 
