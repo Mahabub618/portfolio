@@ -1,13 +1,8 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://REPLACE_WITH_RENDER_SERVICE.onrender.com/api/:path*"
-    },
-    {
-      "source": "/uploads/:path*",
-      "destination": "https://REPLACE_WITH_RENDER_SERVICE.onrender.com/uploads/:path*"
-    }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "https://portfolio-api-698b.onrender.com/api/$1" },
+    { "src": "/uploads/(.*)", "dest": "https://portfolio-api-698b.onrender.com/uploads/$1" },
+    { "handle": "filesystem" },
+    { "src": "/.*", "dest": "/index.html" }
   ]
 }
