@@ -17,7 +17,7 @@ const PROJECT_FIELDS: FieldDef[] = [
 const PROJECT_COLUMNS: ColumnDef[] = [
   { key: 'title', label: 'Title' },
   { key: 'techTags', label: 'Tech', type: 'tags' },
-  { key: 'updatedAt', label: 'Updated' },
+  { key: 'updatedAt', label: 'Updated', type: 'datetime' },
 ];
 
 @Component({

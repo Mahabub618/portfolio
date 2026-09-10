@@ -24,7 +24,7 @@ export interface FieldDef {
 export interface ColumnDef {
   key: string;
   label: string;
-  type?: 'text' | 'date' | 'tags' | 'number';
+  type?: 'text' | 'date' | 'datetime' | 'tags' | 'number';
 }
 
 type Row = Record<string, unknown> & { id: string };
@@ -62,20 +62,20 @@ type Row = Record<string, unknown> & { id: string };
         <p class="text-muted">Nothing here yet — create the first {{ singular() }}.</p>
       </div>
     } @else {
-      <div class="mt-8 overflow-hidden rounded-2xl border border-line bg-surface/40">
-        <table class="w-full text-left text-sm">
-          <thead class="border-b border-line bg-surface/60 text-xs uppercase tracking-wider text-muted">
+      <div class="mt-8 overflow-x-auto rounded-2xl border border-line bg-surface">
+        <table class="w-full min-w-[760px] text-left text-sm">
+          <thead class="border-b border-line bg-bg/30 text-xs uppercase tracking-wider text-muted">
             <tr>
               @for (c of columns(); track c.key) {
                 <th class="px-4 py-3 font-medium first:pl-5">{{ c.label }}</th>
               }
               <th class="px-4 py-3 text-right font-medium">Order</th>
-              <th class="px-5 py-3 text-right font-medium">Actions</th>
+              <th class="sticky right-0 bg-surface px-5 py-3 text-right font-medium shadow-[-8px_0_12px_-8px_rgba(0,0,0,0.45)]">Actions</th>
             </tr>
           </thead>
           <tbody>
             @for (row of items(); track row.id) {
-              <tr class="border-b border-line/60 last:border-0 transition-colors hover:bg-surface/70">
+              <tr class="border-b border-line/60 last:border-0 transition-colors hover:bg-bg/40">
                 @for (c of columns(); track c.key) {
                   <td class="max-w-72 truncate px-4 py-3.5 first:pl-5">
                     @switch (c.type) {
@@ -89,12 +89,15 @@ type Row = Record<string, unknown> & { id: string };
                       @case ('date') {
                         <span class="font-mono text-xs text-muted">{{ row[c.key] ?? '—' }}</span>
                       }
+                      @case ('datetime') {
+                        <span class="font-mono text-xs text-muted">{{ fmtDT(row[c.key]) }}</span>
+                      }
                       @default { {{ row[c.key] ?? '—' }} }
                     }
                   </td>
                 }
                 <td class="px-4 py-3.5 font-mono text-xs text-muted">{{ row['displayOrder'] }}</td>
-                <td class="whitespace-nowrap px-5 py-3.5 text-right">
+                <td class="sticky right-0 whitespace-nowrap bg-surface px-5 py-3.5 text-right shadow-[-8px_0_12px_-8px_rgba(0,0,0,0.45)]">
                   <button type="button" (click)="openEdit(row)" aria-label="Edit"
                     class="rounded-lg border border-line px-2.5 py-1.5 text-xs font-medium transition-colors hover:border-accent/60 hover:text-accent">
                     Edit
@@ -257,6 +260,11 @@ export class CrudManager {
   num(key: string): number {
     const v = this.draft()[key];
     return typeof v === 'number' ? v : Number(v ?? 0);
+  }
+
+  fmtDT(v: unknown): string {
+    if (!v) return '—';
+    return new Date(String(v)).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
   asTags(v: unknown): string[] {
