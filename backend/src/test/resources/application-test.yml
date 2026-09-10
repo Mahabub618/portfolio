@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/portfolio_test
+    username: portfolio
+    password: portfolio
+
+app:
+  jwt:
+    secret: test-secret-key-that-is-at-least-32-characters-long
+    ttl-minutes: 60
+  cors:
+    allowed-origins: http://localhost:4200
+  storage:
+    driver: local
+    max-upload-bytes: 5242880
+    public-base-url: http://localhost:8080
+    local-dir: ./target/test-uploads
+  admin:
+    email: admin@test.local
+    password: test-pass-123
+  seed:
+    sample-data: true

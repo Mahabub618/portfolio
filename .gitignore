@@ -1,0 +1,18 @@
+# dependencies & build output
+node_modules/
+dist/
+target/
+out/
+
+# secrets — never commit
+backend/.env
+deploy/prod-secrets.env
+deploy/render.env
+.env
+
+# runtime data
+backend/uploads/
+*.log
+
+# tooling
+.DS_Store
