@@ -1,5 +1,6 @@
 package com.portfolio.controller;
 
+import com.portfolio.dto.AuthDtos;
 import com.portfolio.dto.AuthDtos.LoginRequest;
 import com.portfolio.dto.AuthDtos.LoginResponse;
 import com.portfolio.service.AuthService;
@@ -32,5 +33,13 @@ public class AuthController {
     @GetMapping("/me")
     public ApiResponse<Map<String, String>> me(Authentication authentication) {
         return ApiResponse.ok(Map.of("email", authentication.getName()));
+    }
+
+    @PostMapping("/password")
+    public ApiResponse<Map<String, String>> changePassword(
+            Authentication authentication,
+            @Valid @RequestBody AuthDtos.ChangePasswordRequest request) {
+        authService.changePassword(authentication.getName(), request);
+        return ApiResponse.ok(Map.of("message", "Password updated"));
     }
 }

@@ -90,5 +90,6 @@ export class AdminShell {
     { path: '/admin/achievements', label: 'Achievements', icon: '★' },
     { path: '/admin/activities', label: 'Activities', icon: '✦' },
     { path: '/admin/blogs', label: 'Travel blogs', icon: '✈' },
+    { path: '/admin/security', label: 'Security', icon: '⚙' },
   ];
 }

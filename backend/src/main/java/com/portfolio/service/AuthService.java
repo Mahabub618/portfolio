@@ -1,5 +1,6 @@
 package com.portfolio.service;
 
+import com.portfolio.dto.AuthDtos;
 import com.portfolio.dto.AuthDtos.LoginRequest;
 import com.portfolio.dto.AuthDtos.LoginResponse;
 import com.portfolio.model.AdminUser;
@@ -33,5 +34,19 @@ public class AuthService {
         JwtService.IssuedToken issued = jwtService.issue(admin.getEmail());
         return new LoginResponse(issued.token(), issued.expiresAt(),
                 new LoginResponse.User(admin.getEmail()));
+    }
+
+    @Transactional
+    public void changePassword(String email, AuthDtos.ChangePasswordRequest request) {
+        AdminUser admin = adminUsers.findByEmailIgnoreCase(email.trim())
+                .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
+        if (!passwordEncoder.matches(request.currentPassword(), admin.getPasswordHash())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+        if (passwordEncoder.matches(request.newPassword(), admin.getPasswordHash())) {
+            throw new IllegalArgumentException("New password must be different from the current one");
+        }
+        admin.setPasswordHash(passwordEncoder.encode(request.newPassword()));
+        adminUsers.save(admin);
     }
 }

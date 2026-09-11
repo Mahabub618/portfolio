@@ -52,6 +52,11 @@ export const adminRoutes: Routes = [
         title: 'Blog editor · Admin',
         loadComponent: () => import('./blog-editor').then((m) => m.BlogEditor),
       },
+      {
+        path: 'security',
+        title: 'Security · Admin',
+        loadComponent: () => import('./security').then((m) => m.AdminSecurity),
+      },
     ],
   },
 ];

@@ -71,4 +71,46 @@ class AuthApiTest extends ApiTestBase {
                 .andExpect(jsonPath("$.error.code").value("VALIDATION_ERROR"))
                 .andExpect(jsonPath("$.error.details.title").value(containsString("blank")));
     }
+
+    @Test
+    void passwordChangeRequiresToken() throws Exception {
+        mockMvc.perform(post("/api/auth/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"currentPassword\":\"x\",\"newPassword\":\"aaaaaaaaaaaa\"}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void passwordChangeRejectsWrongCurrent() throws Exception {
+        mockMvc.perform(withAuth(post("/api/auth/password"), loginToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"currentPassword\":\"not-the-password\",\"newPassword\":\"aaaaaaaaaaaa\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error.message").value(containsString("Current password is incorrect")));
+    }
+
+    @Test
+    void passwordChangeRoundTrip() throws Exception {
+        String fresh = "{\"email\":\"" + ADMIN_EMAIL + "\",\"password\":\"" + ADMIN_PASSWORD + "\"}";
+        mockMvc.perform(withAuth(post("/api/auth/password"), loginToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"currentPassword\":\"" + ADMIN_PASSWORD + "\",\"newPassword\":\"Rotated-Secret-99\"}"))
+                .andExpect(status().isOk());
+        // old password no longer works, new one does
+        mockMvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content(fresh))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"" + ADMIN_EMAIL + "\",\"password\":\"Rotated-Secret-99\"}"))
+                .andExpect(status().isOk());
+        // restore for other tests
+        String tok = mockMvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"" + ADMIN_EMAIL + "\",\"password\":\"Rotated-Secret-99\"}"))
+                .andReturn().getResponse().getContentAsString();
+        String token = com.fasterxml.jackson.databind.ObjectMapper.class != null
+                ? tok.split("\"token\":\"")[1].split("\"")[0] : tok;
+        mockMvc.perform(withAuth(post("/api/auth/password"), token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"currentPassword\":\"Rotated-Secret-99\",\"newPassword\":\"" + ADMIN_PASSWORD + "\"}"))
+                .andExpect(status().isOk());
+    }
 }

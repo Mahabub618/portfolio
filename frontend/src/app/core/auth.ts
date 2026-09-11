@@ -47,6 +47,10 @@ export class AuthService {
     );
   }
 
+  changePassword(currentPassword: string, newPassword: string) {
+    return this.api.post<{ message: string }>('/auth/password', { currentPassword, newPassword });
+  }
+
   completeLogin(res: LoginResponse): void {
     localStorage.setItem(TOKEN_KEY, res.token);
     this._email.set(res.user.email);
