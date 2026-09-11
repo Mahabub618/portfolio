@@ -66,6 +66,9 @@ git remote add origin git@github.com:<you>/portfolio.git && git push -u origin m
 | `ADMIN_EMAIL` | your real email |
 | `ADMIN_PASSWORD` | already generated in `deploy/prod-secrets.env` (stated once in chat) |
 | `JWT_TTL_MINUTES` | `120` |
+| `RESEND_API_KEY` | Resend API key (password-recovery emails; from resend.com) |
+| `EMAIL_FROM` | `Portfolio <onboarding@resend.dev>` (free plan: sends only to the Resend account email) |
+| `FRONTEND_URL` | `https://<your-vercel-domain>.vercel.app` (base for reset links) |
 | `CORS_ALLOWED_ORIGINS` | `https://<your-vercel-domain>.vercel.app` |
 | `STORAGE_DRIVER` | `cloudinary` |
 | `CLOUDINARY_URL` | from step 3 |

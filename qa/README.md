@@ -9,7 +9,9 @@ node public.mjs   # public-site regression
 node clicktest.mjs [BASE]  # travel-card click + drag suppression
 BASE=... EMAIL=... PASSWORD=... node feat-test.mjs   # mobile menu + /admin/security
 #   add ROUNDTRIP=1 to also change the password and revert it (mutating)
+node recovery-test.mjs phase1                        # forgot-password UI (dev-email mode)
+TOKEN=<token-from-backend-log> node recovery-test.mjs phase2   # reset-password UI + login
 ```
 
 All suites must end with 0 failures before a frontend change ships
-(backend changes are additionally covered by `mvn package`, 27 tests).
+(backend changes are additionally covered by `mvn package`, 34 tests).

@@ -39,3 +39,10 @@ app:
     password: ${ADMIN_PASSWORD:}
   seed:
     sample-data: ${SEED_SAMPLE_DATA:true}
+  email:
+    resend-api-key: ${RESEND_API_KEY:}
+    from: ${EMAIL_FROM:Portfolio <onboarding@resend.dev>}
+    frontend-url: ${FRONTEND_URL:http://localhost:4200}
+    token-ttl-minutes: ${RESET_TOKEN_TTL_MINUTES:15}
+    rate-limit-window-minutes: ${RESET_RATE_WINDOW_MINUTES:10}
+    rate-limit-max: ${RESET_RATE_MAX:3}

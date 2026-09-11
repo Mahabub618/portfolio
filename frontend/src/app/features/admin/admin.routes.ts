@@ -8,6 +8,16 @@ export const adminRoutes: Routes = [
     loadComponent: () => import('./login').then((m) => m.AdminLoginPage),
   },
   {
+    path: 'forgot-password',
+    title: 'Forgot password · Admin',
+    loadComponent: () => import('./forgot-password').then((m) => m.ForgotPasswordPage),
+  },
+  {
+    path: 'reset-password',
+    title: 'Reset password · Admin',
+    loadComponent: () => import('./reset-password').then((m) => m.ResetPasswordPage),
+  },
+  {
     path: '',
     canActivate: [authGuard],
     loadComponent: () => import('./admin-shell').then((m) => m.AdminShell),

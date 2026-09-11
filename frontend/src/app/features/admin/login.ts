@@ -54,6 +54,11 @@ import { AuthService } from '../../core/auth';
             </p>
           }
 
+          <div class="mt-3 text-right">
+            <a routerLink="/admin/forgot-password"
+              class="text-xs text-muted transition-colors hover:text-accent">Forgot password?</a>
+          </div>
+
           <button type="submit" [disabled]="busy()"
             class="mt-6 w-full rounded-xl bg-accent py-3 text-sm font-semibold text-accentink shadow-lg shadow-accent/25 transition-all hover:bg-accentstrong disabled:opacity-50">
             {{ busy() ? 'Signing in…' : 'Sign in' }}

@@ -17,6 +17,13 @@ public final class AuthDtos {
             @NotBlank @jakarta.validation.constraints.Size(max = 72) String currentPassword,
             @NotBlank @jakarta.validation.constraints.Size(min = 12, max = 72) String newPassword) {}
 
+    public record ForgotPasswordRequest(
+            @NotBlank @Email @jakarta.validation.constraints.Size(max = 255) String email) {}
+
+    public record ResetPasswordRequest(
+            @NotBlank @jakarta.validation.constraints.Size(max = 200) String token,
+            @NotBlank @jakarta.validation.constraints.Size(min = 12, max = 72) String newPassword) {}
+
     public record LoginResponse(String token, Instant expiresAt, User user) {
         public record User(String email) {}
     }

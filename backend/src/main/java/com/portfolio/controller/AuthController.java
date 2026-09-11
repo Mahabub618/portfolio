@@ -4,6 +4,7 @@ import com.portfolio.dto.AuthDtos;
 import com.portfolio.dto.AuthDtos.LoginRequest;
 import com.portfolio.dto.AuthDtos.LoginResponse;
 import com.portfolio.service.AuthService;
+import com.portfolio.service.PasswordResetService;
 import com.portfolio.web.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
@@ -20,9 +21,11 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final PasswordResetService passwordResetService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, PasswordResetService passwordResetService) {
         this.authService = authService;
+        this.passwordResetService = passwordResetService;
     }
 
     @PostMapping("/login")
@@ -41,5 +44,20 @@ public class AuthController {
             @Valid @RequestBody AuthDtos.ChangePasswordRequest request) {
         authService.changePassword(authentication.getName(), request);
         return ApiResponse.ok(Map.of("message", "Password updated"));
+    }
+
+    @PostMapping("/forgot-password")
+    public ApiResponse<Map<String, String>> forgotPassword(
+            @Valid @RequestBody AuthDtos.ForgotPasswordRequest request) {
+        passwordResetService.requestReset(request.email());
+        return ApiResponse.ok(Map.of(
+                "message", "If an account with that email exists, a reset link is on its way"));
+    }
+
+    @PostMapping("/reset-password")
+    public ApiResponse<Map<String, String>> resetPassword(
+            @Valid @RequestBody AuthDtos.ResetPasswordRequest request) {
+        passwordResetService.resetPassword(request);
+        return ApiResponse.ok(Map.of("message", "Password reset - you can log in now"));
     }
 }

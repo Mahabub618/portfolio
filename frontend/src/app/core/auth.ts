@@ -51,6 +51,14 @@ export class AuthService {
     return this.api.post<{ message: string }>('/auth/password', { currentPassword, newPassword });
   }
 
+  forgotPassword(email: string) {
+    return this.api.post<{ message: string }>('/auth/forgot-password', { email: email.trim() });
+  }
+
+  resetPassword(token: string, newPassword: string) {
+    return this.api.post<{ message: string }>('/auth/reset-password', { token, newPassword });
+  }
+
   completeLogin(res: LoginResponse): void {
     localStorage.setItem(TOKEN_KEY, res.token);
     this._email.set(res.user.email);
