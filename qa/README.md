@@ -7,7 +7,9 @@ python3 qa-api.py [API_BASE] [EMAIL] [PASSWORD]          # API edge cases, defau
 node admin.mjs    # deep admin CRUD suite
 node public.mjs   # public-site regression
 node clicktest.mjs [BASE]  # travel-card click + drag suppression
+BASE=... EMAIL=... PASSWORD=... node feat-test.mjs   # mobile menu + /admin/security
+#   add ROUNDTRIP=1 to also change the password and revert it (mutating)
 ```
 
 All suites must end with 0 failures before a frontend change ships
-(backend changes are additionally covered by `mvn package`, 24 tests).
+(backend changes are additionally covered by `mvn package`, 27 tests).
