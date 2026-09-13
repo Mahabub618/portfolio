@@ -13,4 +13,6 @@ RUN useradd -r -u 1001 appuser && mkdir -p /app/uploads && chown -R appuser /app
 COPY --from=build /app/target/portfolio-api-*.jar app.jar
 USER appuser
 EXPOSE 8080
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "/app/app.jar"]
+# Sized for Render's free 512 MB instance: cap every JVM memory pool explicitly
+# so heap + metaspace + threads + native buffers stay under the container limit.
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=45", "-XX:MaxMetaspaceSize=128m", "-XX:MaxDirectMemorySize=64m", "-XX:ReservedCodeCacheSize=64m", "-Xss512k", "-XX:+UseSerialGC", "-jar", "/app/app.jar"]

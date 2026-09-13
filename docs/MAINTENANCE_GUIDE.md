@@ -283,6 +283,7 @@ Rules that keep you safe:
 | Whole site shows an error page | Bad frontend deploy | Vercel dashboard → Deployments → open the last **working** deploy → **Promote to Production** |
 | You pushed code but nothing changed | Deploys are manual | Backend: Render → Manual Deploy. Frontend: Vercel CLI deploy (§5.5) |
 | API returns 500 errors | Backend bug or DB issue | Render Logs show the exact error; send it to your assistant/developer |
+| Email: "exceeded its memory limit" | JVM outgrew the 512 MB free instance | Fixed in Sep 2026 via JVM flags in `backend/Dockerfile` (heap capped ~230 MB, measured RSS ~300 MB). If it ever recurs: Render dashboard → Metrics, then review the ENTRYPOINT flags |
 | Everything is dead | Account/billing issue on some service | Check each dashboard for banners/emails; see §9 worst case |
 
 When in doubt, the order of investigation is always:
