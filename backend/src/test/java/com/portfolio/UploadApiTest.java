@@ -47,4 +47,17 @@ class UploadApiTest extends ApiTestBase {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error.code").value("INVALID_UPLOAD"));
     }
+
+    @Test
+    void uploadAcceptsPdfForResume() throws Exception {
+        String token = loginToken();
+        byte[] pdf = "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF".getBytes();
+        mockMvc.perform(multipart("/api/uploads")
+                        .file(new MockMultipartFile("file", "resume.pdf", "application/pdf", pdf))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.url", containsString(".pdf")))
+                .andExpect(jsonPath("$.data.width").value(nullValue()))
+                .andExpect(jsonPath("$.data.mimeType").value("application/pdf"));
+    }
 }

@@ -1,9 +1,10 @@
 import { Component, HostListener, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ProfileStore } from '../../core/profile-store';
 import { SmartImage } from '../../shared/smart-image';
 
 @Component({
-  imports: [SmartImage],
+  imports: [SmartImage, RouterLink],
   selector: 'app-hero',
   template: `
     <section id="home" class="relative flex min-h-svh flex-col justify-center overflow-hidden">
@@ -43,16 +44,25 @@ import { SmartImage } from '../../shared/smart-image';
           }
 
           <div class="anim-rise mt-9 flex flex-wrap items-center gap-4" style="animation-delay: 0.45s">
-            @for (cta of profile()?.ctas ?? []; track cta.label) {
-              <a
-                [href]="cta.url"
-                [target]="cta.url.startsWith('http') ? '_blank' : null"
-                [rel]="cta.url.startsWith('http') ? 'noopener' : null"
-                class="rounded-full px-6 py-3 text-sm font-medium transition-all duration-200"
-                [class]="cta.style === 'primary'
-                  ? 'bg-accent text-accentink hover:bg-accentstrong hover:shadow-[0_0_28px_var(--glow)]'
-                  : 'border border-line text-ink hover:border-accent hover:text-accentstrong'"
-              >{{ cta.label }}</a>
+            @for (cta of resolvedCtas(); track cta.label) {
+              @if (cta.href.startsWith('#')) {
+                <!-- internal fragment: router-driven so Angular's anchorScrolling handles it -->
+                <a
+                  [routerLink]="['/']" [fragment]="cta.href.slice(1)"
+                  class="rounded-full px-6 py-3 text-sm font-medium transition-all duration-200"
+                  [class]="cta.style === 'primary'
+                    ? 'bg-accent text-accentink hover:bg-accentstrong hover:shadow-[0_0_28px_var(--glow)]'
+                    : 'border border-line text-ink hover:border-accent hover:text-accentstrong'"
+                >{{ cta.label }}</a>
+              } @else {
+                <a
+                  [href]="cta.href" target="_blank" rel="noopener"
+                  class="rounded-full px-6 py-3 text-sm font-medium transition-all duration-200"
+                  [class]="cta.style === 'primary'
+                    ? 'bg-accent text-accentink hover:bg-accentstrong hover:shadow-[0_0_28px_var(--glow)]'
+                    : 'border border-line text-ink hover:border-accent hover:text-accentstrong'"
+                >{{ cta.label }}</a>
+              }
             }
           </div>
 
@@ -102,6 +112,35 @@ export class Hero {
   private readonly scrollY = signal(0);
 
   readonly parallax = computed(() => Math.min(this.scrollY(), window.innerHeight) * 0.3);
+
+  /**
+   * CTAs with a blank/"#" URL are resolved from context instead of rendering dead links:
+   * a résumé CTA uses the uploaded profile resume (hidden until one exists), a contact
+   * CTA points at the #contacts section. Anything else without a URL is hidden.
+   */
+  readonly resolvedCtas = computed(() =>
+    (this.profile()?.ctas ?? [])
+      .map((cta) => ({ ...cta, href: this.resolveCta(cta) }))
+      .filter((cta): cta is typeof cta & { href: string } => !!cta.href),
+  );
+
+  private resolveCta(cta: { label: string; url: string }): string | null {
+    const url = (cta.url ?? '').trim();
+    if (url && url !== '#') {
+      // legacy data may point at #contact / #Contact — normalize to the real section id
+      return /^#contacts?$/i.test(url) ? '#contacts' : url;
+    }
+    const label = (cta.label ?? '').toLowerCase();
+    if (/r[eé]sum[eé]/.test(label)) {
+      const resume = this.profile()?.resumeUrl;
+      // Cloudinary supports forced download via the fl_attachment transformation
+      return resume
+        ? resume.replace(/\/(image|raw)\/upload\//, '/$1/upload/fl_attachment/')
+        : null;
+    }
+    if (/contact/.test(label)) return '#contacts';
+    return null;
+  }
 
   constructor() {
     this.store.ensureLoaded();

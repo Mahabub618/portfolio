@@ -115,7 +115,7 @@ public class SeedService implements ApplicationRunner {
         profile.setCtaConfig(new ArrayList<>(List.of(
                 new CtaConfig("View Projects", "#projects", "primary"),
                 new CtaConfig("Download Résumé", "#", "secondary"),
-                new CtaConfig("Contact Me", "#contact", "secondary"))));
+                new CtaConfig("Contact Me", "#contacts", "secondary"))));
         profiles.save(profile);
 
         // ---- projects ----

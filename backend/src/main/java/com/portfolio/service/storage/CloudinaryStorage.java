@@ -25,9 +25,12 @@ public class CloudinaryStorage implements StorageService {
 
     @Override
     public String store(byte[] bytes, String contentType, String extension) throws IOException {
+        // PDFs must use the "raw" resource type: Cloudinary's image endpoint blocks
+        // PDF delivery by default, while raw files are always deliverable.
+        String resourceType = "application/pdf".equalsIgnoreCase(contentType) ? "raw" : "image";
         Map<?, ?> result = cloudinary.uploader().upload(bytes, Map.of(
                 "folder", folder,
-                "resource_type", "image"));
+                "resource_type", resourceType));
         Object secureUrl = result.get("secure_url");
         if (secureUrl == null) {
             throw new IOException("Cloudinary upload did not return a secure_url");

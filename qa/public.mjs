@@ -17,7 +17,27 @@ check(home.includes('Your Name'), 'hero renders profile name');
 check((await page.$$('article h3')).length >= 3, 'project cards render');
 check(home.includes('Competitive') || home.includes('Achievement'), 'achievements section renders');
 check(home.includes('Sundarbans by Boat'), 'travel strip renders blog card');
-check(home.includes('admin'), 'footer admin link present');
+check(!home.includes('Content managed via'), 'footer promo text removed');
+
+// contact section + hero CTA wiring
+check(!!(await page.$('#contacts')), 'contact section exists');
+check((await page.$$('#contacts a')).length >= 1, 'contact section lists social channels');
+const heroHrefs = await page.$$eval('#home a', (as) => as.map((a) => a.getAttribute('href')));
+check(!heroHrefs.includes('#'), 'no dead "#" links in hero');
+check(!(await page.$eval('#home', (h) => /r[eé]sum[eé]/i.test(h.innerText))), 'resume button hidden while no resume uploaded');
+const contactBtn = await page.evaluateHandle(() => [...document.querySelectorAll('#home a')].find((a) => /contact/i.test(a.textContent ?? '')));
+if (contactBtn.asElement()) {
+  await contactBtn.asElement().click();
+  await new Promise((r) => setTimeout(r, 1200));
+  check(await page.evaluate(() => {
+    const s = document.querySelector('#contacts');
+    if (!s) return false;
+    const r = s.getBoundingClientRect();
+    return r.top < innerHeight && r.bottom > 0;
+  }), 'Contact Me button scrolls to contact section');
+} else {
+  check(false, 'Contact Me button present in hero');
+}
 
 // travel deep link (SEO + gallery)
 const blogId = await page.evaluate(async () => (await (await fetch('/api/blogs?page=1&size=1')).json()).data.items[0].id);

@@ -21,7 +21,8 @@ public class UploadService {
             "image/jpeg", ".jpg",
             "image/png", ".png",
             "image/webp", ".webp",
-            "image/gif", ".gif");
+            "image/gif", ".gif",
+            "application/pdf", ".pdf");
 
     private final StorageService storage;
     private final long maxBytes;
@@ -39,7 +40,7 @@ public class UploadService {
         String extension = ALLOWED.get(contentType);
         if (extension == null) {
             throw new InvalidUploadException(
-                    "Unsupported file type '" + contentType + "'. Allowed: jpeg, png, webp, gif");
+                    "Unsupported file type '" + contentType + "'. Allowed: jpeg, png, webp, gif, pdf");
         }
         byte[] bytes = file.getBytes();
         if (bytes.length > maxBytes) {

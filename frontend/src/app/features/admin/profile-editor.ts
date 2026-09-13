@@ -59,11 +59,18 @@ interface CtaRow extends Cta {}
               <textarea rows="3" [value]="form().intro ?? ''" (input)="set('intro', $any($event.target).value)"
                 class="w-full rounded-xl border border-line bg-bg px-3.5 py-2.5 text-sm outline-none focus:border-accent"></textarea>
             </label>
-            <label class="block text-sm">
-              <span class="mb-1.5 block font-medium text-muted">Resume URL</span>
+            <div class="block text-sm">
+              <span class="mb-1.5 block font-medium text-muted">Resume (PDF, max 5 MB)</span>
+              <input type="file" accept="application/pdf" (change)="upload($event, 'resumeUrl')"
+                class="block w-full text-xs text-muted file:mr-3 file:rounded-lg file:border-0 file:bg-accent/15 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-accent" />
               <input type="url" [value]="form().resumeUrl ?? ''" (input)="set('resumeUrl', $any($event.target).value)"
-                class="w-full rounded-xl border border-line bg-bg px-3.5 py-2.5 text-sm outline-none focus:border-accent" />
-            </label>
+                placeholder="…or paste a URL"
+                class="mt-2 w-full rounded-xl border border-line bg-bg px-3 py-2 text-xs outline-none focus:border-accent" />
+              @if (form().resumeUrl) {
+                <a [href]="form().resumeUrl" target="_blank" rel="noopener"
+                  class="mt-1.5 inline-block text-xs text-accent transition-colors hover:text-accentstrong">View current resume ↗</a>
+              }
+            </div>
           </div>
         </section>
 
@@ -207,7 +214,7 @@ export class ProfileEditor {
     this.ctas.update((c) => c.filter((_, idx) => idx !== i));
   }
 
-  upload(event: Event, field: 'photoUrl' | 'bannerImageUrl'): void {
+  upload(event: Event, field: 'photoUrl' | 'bannerImageUrl' | 'resumeUrl'): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     input.value = '';
