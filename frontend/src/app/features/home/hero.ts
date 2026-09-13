@@ -98,7 +98,7 @@ import { SmartImage } from '../../shared/smart-image';
       </div>
 
       <a
-        href="#projects"
+        [routerLink]="['/']" fragment="projects"
         class="float-y absolute bottom-8 left-1/2 -translate-x-1/2 text-muted transition-colors hover:text-accent"
         aria-label="Scroll to projects"
       >
