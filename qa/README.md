@@ -7,6 +7,7 @@ python3 qa-api.py [API_BASE] [EMAIL] [PASSWORD]          # API edge cases, defau
 node admin.mjs    # deep admin CRUD suite
 node public.mjs   # public-site regression
 node clicktest.mjs [BASE]  # travel-card click + drag suppression
+node admin-mobile-nav.mjs  # admin hamburger menu @390 + desktop sidebar sanity
 BASE=... EMAIL=... PASSWORD=... node feat-test.mjs   # mobile menu + /admin/security
 #   add ROUNDTRIP=1 to also change the password and revert it (mutating)
 node recovery-test.mjs phase1                        # forgot-password UI (dev-email mode)
