@@ -81,6 +81,40 @@ await page.goto(BASE + '/', { waitUntil: 'networkidle2' });
 await new Promise((r) => setTimeout(r, 1200));
 check(!(await page.$eval('#home', (h) => /r[eé]sum[eé]/i.test(h.innerText))), 'resume button hidden again after revert');
 
+// contact email cycle: set -> hero Contact Me becomes mailto -> revert -> hidden
+const setOk = await page.evaluate(async (email) => {
+  const token = localStorage.getItem('portfolio.jwt');
+  const current = (await (await fetch('/api/profile')).json()).data;
+  const res = await fetch('/api/profile', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+    body: JSON.stringify({ ...current, contactEmail: email }),
+  });
+  return res.ok && (await res.json()).data.contactEmail === email;
+}, 'qa-contact@example.com');
+check(setOk, 'contactEmail saved via API');
+await page.goto(BASE + '/', { waitUntil: 'networkidle2' });
+await new Promise((r) => setTimeout(r, 1200));
+const contactHref = await page.evaluate(() => {
+  const a = [...document.querySelectorAll('#home a')].find((x) => /contact/i.test(x.textContent ?? ''));
+  return a ? a.getAttribute('href') : null;
+});
+check(contactHref === 'mailto:qa-contact@example.com', `Contact Me renders mailto -> ${contactHref}`);
+const cleared = await page.evaluate(async () => {
+  const token = localStorage.getItem('portfolio.jwt');
+  const current = (await (await fetch('/api/profile')).json()).data;
+  const res = await fetch('/api/profile', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+    body: JSON.stringify({ ...current, contactEmail: null }),
+  });
+  return res.ok;
+});
+check(cleared, 'contactEmail reverted to null');
+await page.goto(BASE + '/', { waitUntil: 'networkidle2' });
+await new Promise((r) => setTimeout(r, 1200));
+check(!(await page.$eval('#home', (h) => /contact me/i.test(h.innerText))), 'Contact Me hidden again after revert');
+
 console.log(`\n=== RESUME FLOW QA: ${passes} passed, ${fails} failed ===`);
 await browser.close();
 process.exit(fails ? 1 : 0);

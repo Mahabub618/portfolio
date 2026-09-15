@@ -9,7 +9,6 @@ const LINKS = [
   { fragment: 'achievements', label: 'Achievements' },
   { fragment: 'activities', label: 'Activities' },
   { fragment: 'travel', label: 'Travel' },
-  { fragment: 'contacts', label: 'Contact' },
 ];
 
 @Component({

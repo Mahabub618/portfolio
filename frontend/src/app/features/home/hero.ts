@@ -56,7 +56,9 @@ import { SmartImage } from '../../shared/smart-image';
                 >{{ cta.label }}</a>
               } @else {
                 <a
-                  [href]="cta.href" target="_blank" rel="noopener"
+                  [href]="cta.href"
+                  [target]="cta.href.startsWith('http') ? '_blank' : null"
+                  [rel]="cta.href.startsWith('http') ? 'noopener' : null"
                   class="rounded-full px-6 py-3 text-sm font-medium transition-all duration-200"
                   [class]="cta.style === 'primary'
                     ? 'bg-accent text-accentink hover:bg-accentstrong hover:shadow-[0_0_28px_var(--glow)]'
@@ -114,9 +116,10 @@ export class Hero {
   readonly parallax = computed(() => Math.min(this.scrollY(), window.innerHeight) * 0.3);
 
   /**
-   * CTAs with a blank/"#" URL are resolved from context instead of rendering dead links:
-   * a résumé CTA uses the uploaded profile resume (hidden until one exists), a contact
-   * CTA points at the #contacts section. Anything else without a URL is hidden.
+   * CTAs with a blank/"#" URL (or legacy "#contact(s)") are resolved from context
+   * instead of rendering dead links: a résumé CTA uses the uploaded profile resume
+   * (hidden until one exists); a contact CTA becomes mailto:<contactEmail>
+   * (hidden until an email is configured). Any other URL passes through untouched.
    */
   readonly resolvedCtas = computed(() =>
     (this.profile()?.ctas ?? [])
@@ -126,10 +129,7 @@ export class Hero {
 
   private resolveCta(cta: { label: string; url: string }): string | null {
     const url = (cta.url ?? '').trim();
-    if (url && url !== '#') {
-      // legacy data may point at #contact / #Contact — normalize to the real section id
-      return /^#contacts?$/i.test(url) ? '#contacts' : url;
-    }
+    if (url && url !== '#' && !/^#contacts?$/i.test(url)) return url;
     const label = (cta.label ?? '').toLowerCase();
     if (/r[eé]sum[eé]/.test(label)) {
       const resume = this.profile()?.resumeUrl;
@@ -138,7 +138,10 @@ export class Hero {
         ? resume.replace(/\/(image|raw)\/upload\//, '/$1/upload/fl_attachment/')
         : null;
     }
-    if (/contact/.test(label)) return '#contacts';
+    if (/contact/.test(label)) {
+      const email = this.profile()?.contactEmail;
+      return email ? 'mailto:' + email : null;
+    }
     return null;
   }
 

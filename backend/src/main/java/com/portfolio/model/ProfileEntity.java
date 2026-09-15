@@ -57,6 +57,9 @@ public class ProfileEntity {
     @Column(name = "resume_url", length = 512)
     private String resumeUrl;
 
+    @Column(name = "contact_email", length = 255)
+    private String contactEmail;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -90,6 +93,8 @@ public class ProfileEntity {
     public void setCtaConfig(List<CtaConfig> ctaConfig) { this.ctaConfig = ctaConfig; }
     public String getResumeUrl() { return resumeUrl; }
     public void setResumeUrl(String resumeUrl) { this.resumeUrl = resumeUrl; }
+    public String getContactEmail() { return contactEmail; }
+    public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
 }

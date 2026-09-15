@@ -24,7 +24,8 @@ public final class ProfileDtos {
             @Size(max = 255) String bannerAlt,
             Map<String, String> socialLinks,
             @Valid List<CtaConfig> ctas,
-            @Size(max = 512) String resumeUrl) {}
+            @Size(max = 512) String resumeUrl,
+            @Size(max = 255) String contactEmail) {}
 
     public record Response(
             UUID id,
@@ -38,12 +39,14 @@ public final class ProfileDtos {
             Map<String, String> socialLinks,
             List<CtaConfig> ctas,
             String resumeUrl,
+            String contactEmail,
             Instant updatedAt) {
 
         public static Response from(ProfileEntity p) {
             return new Response(p.getId(), p.getName(), p.getTagline(), p.getIntro(),
                     p.getPhotoUrl(), p.getPhotoAlt(), p.getBannerImageUrl(), p.getBannerAlt(),
-                    p.getSocialLinks(), p.getCtaConfig(), p.getResumeUrl(), p.getUpdatedAt());
+                    p.getSocialLinks(), p.getCtaConfig(), p.getResumeUrl(), p.getContactEmail(),
+                    p.getUpdatedAt());
         }
     }
 }

@@ -29,6 +29,7 @@ export interface Profile {
   socialLinks: Record<string, string>;
   ctas: Cta[];
   resumeUrl: string | null;
+  contactEmail: string | null;
   updatedAt: string;
 }
 

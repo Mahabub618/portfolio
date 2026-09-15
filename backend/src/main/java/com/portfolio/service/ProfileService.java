@@ -40,6 +40,7 @@ public class ProfileService {
         profile.setSocialLinks(request.socialLinks() == null ? new LinkedHashMap<>() : new LinkedHashMap<>(request.socialLinks()));
         profile.setCtaConfig(request.ctas() == null ? new ArrayList<CtaConfig>() : new ArrayList<>(request.ctas()));
         profile.setResumeUrl(Support.blankToNull(request.resumeUrl()));
+        profile.setContactEmail(Support.blankToNull(request.contactEmail()));
         return ProfileDtos.Response.from(profiles.save(profile));
     }
 }

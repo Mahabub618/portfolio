@@ -71,6 +71,13 @@ interface CtaRow extends Cta {}
                   class="mt-1.5 inline-block text-xs text-accent transition-colors hover:text-accentstrong">View current resume ↗</a>
               }
             </div>
+            <label class="block text-sm">
+              <span class="mb-1.5 block font-medium text-muted">Contact email</span>
+              <input type="email" [value]="form().contactEmail ?? ''" (input)="set('contactEmail', $any($event.target).value)"
+                placeholder="you@example.com"
+                class="w-full rounded-xl border border-line bg-bg px-3.5 py-2.5 text-sm outline-none focus:border-accent" />
+              <span class="mt-1.5 block text-xs text-muted">Used by the hero "Contact Me" button (opens a mail draft). Button hides until set.</span>
+            </label>
           </div>
         </section>
 
@@ -239,7 +246,8 @@ export class ProfileEditor {
     for (const row of this.links()) {
       if (row.key.trim() && row.value.trim()) socialLinks[row.key.trim()] = row.value.trim();
     }
-    const ctas = this.ctas().filter((c) => c.label.trim() && c.url.trim());
+    // url may stay blank for contextual CTAs (resume / contact) — the hero resolves them
+    const ctas = this.ctas().filter((c) => c.label.trim());
     const payload = {
       name: f.name!.trim(),
       tagline: f.tagline || null,
@@ -251,6 +259,7 @@ export class ProfileEditor {
       socialLinks,
       ctas,
       resumeUrl: f.resumeUrl || null,
+      contactEmail: f.contactEmail || null,
     };
     this.saving.set(true);
     this.admin.update<Profile>('/profile', payload).subscribe({

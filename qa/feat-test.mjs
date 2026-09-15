@@ -24,7 +24,7 @@ check(!!burger, 'hamburger visible on mobile');
 await burger.click();
 await new Promise((r) => setTimeout(r, 400));
 check(!!(await page.$('#mobile-menu')), 'menu panel opens');
-check((await page.$$('#mobile-menu a')).length === 6, 'menu lists 6 section links');
+check((await page.$$('#mobile-menu a')).length === 5, 'menu lists 5 section links');
 check((await burger.evaluate((b) => b.getAttribute('aria-expanded'))) === 'true', 'aria-expanded=true when open');
 await page.click('#mobile-menu a[href*="projects"]');
 await new Promise((r) => setTimeout(r, 1200));

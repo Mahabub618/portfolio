@@ -16,7 +16,7 @@ class ProfileApiTest extends ApiTestBase {
              "photoUrl":"https://example.com/p.jpg","photoAlt":"Me",
              "socialLinks":{"github":"https://github.com/test"},
              "ctas":[{"label":"Projects","url":"#projects","style":"primary"}],
-             "resumeUrl":""}
+             "resumeUrl":"","contactEmail":"test@example.com"}
             """;
 
     @Test
@@ -44,7 +44,8 @@ class ProfileApiTest extends ApiTestBase {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.name").value("Test Person"))
                 .andExpect(jsonPath("$.data.socialLinks.github").value("https://github.com/test"))
-                .andExpect(jsonPath("$.data.ctas[*].label", hasItem("Projects")));
+                .andExpect(jsonPath("$.data.ctas[*].label", hasItem("Projects")))
+                .andExpect(jsonPath("$.data.contactEmail").value("test@example.com"));
 
         // change is visible on the public GET within the same transaction
         mockMvc.perform(get("/api/profile"))
