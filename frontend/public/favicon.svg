@@ -1,24 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Mahabub Rahman portfolio">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#151A33"/>
-      <stop offset="1" stop-color="#0B0E1A"/>
-    </linearGradient>
-    <linearGradient id="mono" x1="0" y1="1" x2="1" y2="0">
-      <stop offset="0" stop-color="#7C3AED"/>
-      <stop offset="0.55" stop-color="#A78BFA"/>
-      <stop offset="1" stop-color="#DDD6FE"/>
-    </linearGradient>
+    <linearGradient id="p1" gradientUnits="userSpaceOnUse" x1="23" y1="16" x2="23" y2="50"><stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#4C1D95"/></linearGradient>
+    <linearGradient id="p2" gradientUnits="userSpaceOnUse" x1="43" y1="24" x2="43" y2="50"><stop offset="0" stop-color="#F472B6"/><stop offset="1" stop-color="#9D174D"/></linearGradient>
+    <linearGradient id="p3" gradientUnits="userSpaceOnUse" x1="26" y1="31" x2="26" y2="50"><stop offset="0" stop-color="#FBBF24"/><stop offset="1" stop-color="#B45309"/></linearGradient>
   </defs>
-
-  <rect width="64" height="64" rx="15" fill="url(#bg)"/>
-  <rect x="1.5" y="1.5" width="61" height="61" rx="13.5" fill="none" stroke="#8B5CF6" stroke-opacity="0.35" stroke-width="1.5"/>
-
-  <!-- stylised M monogram -->
-  <path d="M13 47.5V16.5l11 13.5 11-13.5v31" fill="none" stroke="url(#mono)" stroke-width="7.5"
-        stroke-linecap="round" stroke-linejoin="round"/>
-
-  <!-- violet spark -->
-  <path d="M48.5 15.5l2.1 5.9 5.9 2.1-5.9 2.1-2.1 5.9-2.1-5.9-5.9-2.1 5.9-2.1z" fill="#C4B5FD"/>
-  <circle cx="48.5" cy="44" r="3" fill="#8B5CF6" fill-opacity="0.55"/>
+  <circle cx="49" cy="14" r="4.5" fill="#DDD6FE"/>
+  <path d="M5 50 L23 16 L37 41 L32 50 Z" fill="url(#p1)"/>
+  <path d="M27 50 L43 24 L59 50 Z" fill="url(#p2)"/>
+  <path d="M13 50 L26 31 L39 50 Z" fill="url(#p3)"/>
 </svg>
